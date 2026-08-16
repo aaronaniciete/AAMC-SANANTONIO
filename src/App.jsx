@@ -481,21 +481,6 @@ async function saveScheduleNotice(notice) {
   if (error) console.error("saveScheduleNotice failed", error);
 }
 
-// A short notice shown on the public booking website (e.g. "Closed this Saturday for a
-// holiday"). Stored the same way as clinic info, but also readable by the public site itself —
-// see the extra RLS policy in schema-notice.sql.
-const defaultScheduleNotice = () => ({ message: "", active: false });
-async function loadScheduleNotice() {
-  const { data, error } = await supabase.from("app_state").select("value").eq("key", "schedule-notice").maybeSingle();
-  if (error) { console.error("loadScheduleNotice failed", error); return defaultScheduleNotice(); }
-  if (!data) return defaultScheduleNotice();
-  return { ...defaultScheduleNotice(), ...data.value };
-}
-async function saveScheduleNotice(notice) {
-  const { error } = await supabase.from("app_state").upsert({ key: "schedule-notice", value: notice, updated_at: new Date().toISOString() });
-  if (error) console.error("saveScheduleNotice failed", error);
-}
-
 // Online booking requests from the public website — stored in their own table (not app_state)
 // since the public site needs to INSERT into it without ever being able to read other patients'
 // data back. See schema-booking.sql.
