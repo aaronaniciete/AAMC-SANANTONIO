@@ -3619,64 +3619,64 @@ function PrintableMedCert({ cert, patient, clinicInfo, provider }) {
   const age = calcAge(patient.dob);
   const issueDate = new Date(cert.date || Date.now());
   return (
-    <div style={printStyles.page}>
-      <div style={printStyles.headerRow}>
-        <div style={printStyles.logoCircle}>
-          <Stethoscope size={26} color="#0F5E56" />
+    <div style={printStylesHalf.page}>
+      <div style={printStylesHalf.headerRow}>
+        <div style={printStylesHalf.logoCircle}>
+          <Stethoscope size={16} color="#0F5E56" />
         </div>
         <div>
-          <div style={printStyles.clinicName}>{clinicInfo.name}</div>
-          <div style={printStyles.clinicSub}>{clinicInfo.address}</div>
-          <div style={printStyles.clinicSub}>{clinicInfo.phone}</div>
+          <div style={printStylesHalf.clinicName}>{clinicInfo.name}</div>
+          <div style={printStylesHalf.clinicSub}>{clinicInfo.address}</div>
+          <div style={printStylesHalf.clinicSub}>{clinicInfo.phone}</div>
         </div>
       </div>
 
-      <div style={{ textAlign: "right", fontSize: 12.5, margin: "10px 0 18px" }}>
-        <b>Date:</b> <Blank minWidth={140}>{fmtDate(issueDate)}</Blank>
+      <div style={{ textAlign: "right", fontSize: 8.5, margin: "4px 0 6px" }}>
+        <b>Date:</b> <Blank minWidth={90}>{fmtDate(issueDate)}</Blank>
       </div>
 
-      <div style={printStyles.certTitle}>MEDICAL CERTIFICATE</div>
+      <div style={printStylesHalf.certTitle}>MEDICAL CERTIFICATE</div>
 
-      <div style={{ fontSize: 13, marginTop: 18, lineHeight: 1.9 }}>
-        <p>To whom it may concern:</p>
-        <p style={{ textIndent: "2em" }}>
-          This is to certify that <Blank minWidth={220}>{patient.name}</Blank>,{" "}
-          <Blank minWidth={40}>{age !== null ? age : ""}</Blank> years of age,{" "}
-          <Blank minWidth={60}>{patient.sex || ""}</Blank> (sex), currently residing in{" "}
-          <Blank minWidth={260}>{patient.address || ""}</Blank> consulted and was examined on{" "}
-          <Blank minWidth={130}>{fmtDate(cert.examDate)}</Blank> at {clinicInfo.name} for{" "}
-          <Blank minWidth={260}>{cert.reason || ""}</Blank>.
+      <div style={{ fontSize: 8.5, marginTop: 6, lineHeight: 1.5 }}>
+        <p style={{ margin: "0 0 3px" }}>To whom it may concern:</p>
+        <p style={{ textIndent: "1.5em", margin: 0 }}>
+          This is to certify that <Blank minWidth={140}>{patient.name}</Blank>,{" "}
+          <Blank minWidth={26}>{age !== null ? age : ""}</Blank> years of age,{" "}
+          <Blank minWidth={40}>{patient.sex || ""}</Blank> (sex), currently residing in{" "}
+          <Blank minWidth={160}>{patient.address || ""}</Blank> consulted and was examined on{" "}
+          <Blank minWidth={80}>{fmtDate(cert.examDate)}</Blank> at {clinicInfo.name} for{" "}
+          <Blank minWidth={160}>{cert.reason || ""}</Blank>.
         </p>
       </div>
 
-      <div style={{ marginTop: 18 }}>
-        <div style={{ fontSize: 13, fontWeight: 700 }}>Assessment/Impression:</div>
-        <div style={printStyles.ruledBlock}>{cert.assessment || ""}</div>
+      <div style={{ marginTop: 6 }}>
+        <div style={{ fontSize: 8.5, fontWeight: 700 }}>Assessment/Impression:</div>
+        <div style={printStylesHalf.ruledBlock}>{cert.assessment || ""}</div>
       </div>
 
-      <div style={{ marginTop: 18 }}>
-        <div style={{ fontSize: 13, fontWeight: 700 }}>Recommendation/s:</div>
-        <div style={printStyles.ruledBlock}>{cert.recommendation || ""}</div>
+      <div style={{ marginTop: 6 }}>
+        <div style={{ fontSize: 8.5, fontWeight: 700 }}>Recommendation/s:</div>
+        <div style={printStylesHalf.ruledBlock}>{cert.recommendation || ""}</div>
       </div>
 
-      <p style={{ fontSize: 13, marginTop: 22, lineHeight: 1.7 }}>
+      <p style={{ fontSize: 7.5, marginTop: 7, lineHeight: 1.4 }}>
         This certificate is being issued upon the request of the above-mentioned name for whatever
         purpose it may serve, excluding legal matters.
       </p>
 
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 40 }}>
-        <div style={printStyles.signatureBlock}>
-          <div style={printStyles.signatureLine}>{provider}</div>
-          <div style={{ fontSize: 11 }}>Medical Doctor</div>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
+        <div style={printStylesHalf.signatureBlock}>
+          <div style={printStylesHalf.signatureLine}>{provider}</div>
+          <div style={{ fontSize: 7.5 }}>Medical Doctor</div>
         </div>
       </div>
       {cert.signedBy && (
-        <div style={{ fontSize: 10, color: "#0F5E56", marginTop: 4, textAlign: "right" }}>
+        <div style={{ fontSize: 6.5, color: "#0F5E56", marginTop: 3, textAlign: "right" }}>
           Electronically signed by {cert.signedBy} — {fmtDateTime(cert.signedAt)}
         </div>
       )}
 
-      <div style={{ fontSize: 12, fontWeight: 700, marginTop: 26 }}>*Not valid without dry seal</div>
+      <div style={{ fontSize: 7.5, fontWeight: 700, marginTop: 8 }}>*Not valid without dry seal</div>
     </div>
   );
 }
@@ -4996,14 +4996,15 @@ const globalCss = `
     #rx-print-area, #rx-print-area *, #cert-print-area, #cert-print-area *, #exam-print-area, #exam-print-area *, #lab-print-area, #lab-print-area * { visibility: visible; }
     #rx-print-area, #cert-print-area, #exam-print-area, #lab-print-area { display: block; position: absolute; top: 0; left: 0; width: 100%; }
     @page { margin: 10mm; }
-    /* The prescription and lab request are both designed to fit within half of an A4 sheet (see
-       printStylesHalf and the dashed cut line at the bottom of each) — that's what actually
-       determines their size. This half-A4 page-size hint is a bonus for any browser/printer that
-       happens to honor it directly; Firefox in particular often ignores it and falls back to
-       whatever's picked in the print dialog (usually A4), which is exactly why the content itself
-       is sized to work either way. */
-    @page half-sheet { size: 210mm 148.5mm; margin: 4mm; }
-    #rx-print-area, #lab-print-area { page: half-sheet; }
+    /* The prescription, medical certificate, and lab request are all designed to fit within half
+       of an A4 sheet (see printStylesHalf) — that's what actually determines their size. The
+       "landscape" keyword below is a hint asking the print dialog to default to landscape
+       orientation; unlike an exact custom size (which Firefox tends to ignore and fall back to
+       whatever's already selected there, usually A4 portrait), an orientation keyword has a
+       better chance of actually being honored — though it's still a hint, not a guarantee, so
+       the content itself stays sized to look right whichever way it ends up printing. */
+    @page half-sheet { size: A4 landscape; margin: 4mm; }
+    #rx-print-area, #cert-print-area, #lab-print-area { page: half-sheet; }
   }
 `;
 
@@ -5059,4 +5060,5 @@ const printStylesHalf = {
   signatureBlock: { textAlign: "center", minWidth: 100 },
   signatureLine: { borderTop: "1px solid #333", paddingTop: 3, fontSize: 8.5, fontWeight: 600 },
   certTitle: { textAlign: "center", fontSize: 12, fontWeight: 800, marginTop: 5, letterSpacing: 0.4 },
+  ruledBlock: { fontSize: 8.5, lineHeight: 1.7, borderBottom: "1px solid #999", minHeight: 26, marginTop: 2, whiteSpace: "pre-wrap" },
 };
