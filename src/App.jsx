@@ -3022,79 +3022,85 @@ function PrintableRx({ rx, patient, clinicInfo, provider, vitals }) {
   const age = calcAge(patient.dob);
   const today = new Date(rx.date || Date.now());
   const v = vitals || {};
+  const tier = getRxDensityTier(rx.meds.length);
+  const th = { border: "1px solid #333", padding: tier.cellPad, background: "#F1F4F3", textAlign: "left", fontSize: tier.thFont };
+  const td = { border: "1px solid #333", padding: tier.cellPad, verticalAlign: "top", fontSize: tier.tableFont };
+  const tdCenter = { ...td, textAlign: "center" };
+
   return (
-    <div style={printStylesHalf.page}>
-      <div style={printStylesHalf.headerRow}>
-        <div style={printStylesHalf.logoCircle}>
-          <Stethoscope size={28} color="#0F5E56" />
+    <div style={printStylesRxA6.page}>
+      <div style={printStylesRxA6.headerRow}>
+        <div style={printStylesRxA6.logoCircle}>
+          <Stethoscope size={14} color="#0F5E56" />
         </div>
-        <div>
-          <div style={printStylesHalf.clinicName}>{clinicInfo.name}</div>
-          <div style={printStylesHalf.clinicSub}>{clinicInfo.address}</div>
-          <div style={printStylesHalf.clinicSub}>{clinicInfo.phone}</div>
+        <div style={printStylesRxA6.headerTextCol}>
+          <div style={printStylesRxA6.clinicName}>{clinicInfo.name}</div>
+          <div style={printStylesRxA6.clinicSub}>{clinicInfo.address}</div>
+          <div style={printStylesRxA6.clinicSub}>{clinicInfo.phone}</div>
+        </div>
+        <div style={printStylesRxA6.headerSpacer} />
+      </div>
+
+      <div style={printStylesRxA6.fieldsCol}>
+        <div style={printStylesRxA6.fieldLine}>
+          <b>Name:</b> {patient.name} &nbsp;&nbsp; <b>Age/Sex:</b> {age !== null ? age : "—"} / {(patient.sex || "").slice(0, 1)} &nbsp;&nbsp; <b>Date:</b> {fmtDate(today)}
+        </div>
+        <div style={printStylesRxA6.fieldLine}><b>Address:</b> {patient.address || ""}</div>
+        <div style={printStylesRxA6.fieldLine}>
+          <b>Wt:</b> {v.weight || "___"}
         </div>
       </div>
 
-      <div style={printStylesHalf.fieldsRow}>
-        <div style={printStylesHalf.fieldsCol}>
-          <div style={printStylesHalf.fieldLine}><b>Name:</b> {patient.name}</div>
-          <div style={printStylesHalf.fieldLine}><b>Address:</b> {patient.address || ""}</div>
-          <div style={printStylesHalf.fieldLine}><b>Contact No:</b> {patient.contact || ""}</div>
-        </div>
-        <div style={printStylesHalf.fieldsCol}>
-          <div style={printStylesHalf.fieldLine}><b>Date:</b> {fmtDate(today)}</div>
-          <div style={printStylesHalf.fieldLine}><b>Age/Sex:</b> {age !== null ? age : "—"} / {(patient.sex || "").slice(0, 1)}</div>
-          <div style={printStylesHalf.fieldLine}>
-            <b>BP:</b> {v.bp || "____"} &nbsp; <b>Temp:</b> {v.temp || "___"} &nbsp; <b>Wt:</b> {v.weight || "___"}
-          </div>
-        </div>
+      <div style={{ fontSize: tier.rxMark, fontWeight: 800, color: "#555", margin: "5px 0 6px" }}>
+        R<span style={{ fontSize: "0.6em" }}>x</span>
       </div>
 
-      <div style={printStylesHalf.rxMark}>R<span style={{ fontSize: "0.6em" }}>x</span></div>
-
-      <table style={printStylesHalf.table}>
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr>
-            <th style={{ ...printStylesHalf.th, width: 28 }}>No</th>
-            <th style={printStylesHalf.th}>Medications and Dosage</th>
-            <th style={{ ...printStylesHalf.th, width: 28 }}>AM</th>
-            <th style={{ ...printStylesHalf.th, width: 28 }}>NN</th>
-            <th style={{ ...printStylesHalf.th, width: 28 }}>PM</th>
-            <th style={{ ...printStylesHalf.th, width: 110 }}>Remarks</th>
+            <th style={{ ...th, width: 14 }}>No</th>
+            <th style={th}>Medications and Dosage</th>
+            <th style={{ ...th, width: 20 }}>AM</th>
+            <th style={{ ...th, width: 20 }}>NN</th>
+            <th style={{ ...th, width: 20 }}>PM</th>
+            <th style={{ ...th, width: 88 }}>Remarks</th>
           </tr>
         </thead>
         <tbody>
           {rx.meds.map((m, i) => (
             <tr key={i}>
-              <td style={printStylesHalf.tdCenter}>{m.qty || ""}</td>
-              <td style={printStylesHalf.td}>
+              <td style={tdCenter}>{m.qty || ""}</td>
+              <td style={td}>
                 {m.name}
-                {m.indication && <div style={{ fontSize: 14, marginTop: 2 }}>({m.indication})</div>}
+                {m.indication && <div style={{ fontSize: tier.indicationFont, marginTop: 1 }}>({m.indication})</div>}
               </td>
-              <td style={printStylesHalf.tdCenter}>{m.am || ""}</td>
-              <td style={printStylesHalf.tdCenter}>{m.nn || ""}</td>
-              <td style={printStylesHalf.tdCenter}>{m.pm || ""}</td>
-              <td style={printStylesHalf.td}>{m.remarks || ""}</td>
+              <td style={tdCenter}>{m.am || ""}</td>
+              <td style={tdCenter}>{m.nn || ""}</td>
+              <td style={tdCenter}>{m.pm || ""}</td>
+              <td style={td}>{m.remarks || ""}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
       {rx.notes && (
-        <div style={{ fontSize: 16, marginTop: 10 }}>
+        <div style={{ fontSize: Math.max(tier.tableFont, 7.5), marginTop: 6 }}>
           <b>Notes:</b> {rx.notes}
         </div>
       )}
 
-      <div style={printStylesHalf.footerRow}>
-        <div style={printStylesHalf.followUp}>Follow-up: ________, {today.getFullYear()}</div>
-        <div style={printStylesHalf.signatureBlock}>
-          <div style={printStylesHalf.signatureLine}>{provider}</div>
-          <div style={{ fontSize: 14 }}>Medical Doctor</div>
+      <div style={printStylesRxA6.footerRow}>
+        <div style={printStylesRxA6.followUp}>Follow-up: ________, {today.getFullYear()}</div>
+        <div style={printStylesRxA6.signatureRow}>
+          <div style={printStylesRxA6.signatureBlock}>
+            <div style={printStylesRxA6.signatureSpace} />
+            <div style={printStylesRxA6.signatureLine}>{provider}</div>
+            <div style={{ fontSize: 7.5 }}>Medical Doctor</div>
+          </div>
         </div>
       </div>
       {rx.signedBy && (
-        <div style={{ fontSize: 13, color: "#0F5E56", marginTop: 8, textAlign: "right" }}>
+        <div style={{ fontSize: 6.5, color: "#0F5E56", marginTop: 4, textAlign: "right" }}>
           Electronically signed by {rx.signedBy} — {fmtDateTime(rx.signedAt)}
         </div>
       )}
@@ -5126,15 +5132,16 @@ const globalCss = `
     #rx-print-area, #rx-print-area *, #cert-print-area, #cert-print-area *, #exam-print-area, #exam-print-area *, #lab-print-area, #lab-print-area * { visibility: visible; }
     #rx-print-area, #cert-print-area, #exam-print-area, #lab-print-area { display: block; position: absolute; top: 0; left: 0; width: 100%; }
     @page { margin: 10mm; }
-    /* The prescription, medical certificate, and lab request are all designed to fit within half
-       of an A4 sheet (see printStylesHalf) — that's what actually determines their size. The
-       "landscape" keyword below is a hint asking the print dialog to default to landscape
-       orientation; unlike an exact custom size (which Firefox tends to ignore and fall back to
-       whatever's already selected there, usually A4 portrait), an orientation keyword has a
-       better chance of actually being honored — though it's still a hint, not a guarantee, so
-       the content itself stays sized to look right whichever way it ends up printing. */
+    /* The certificate and lab request are designed to fit within half of an A4 sheet
+       (see printStylesHalf); the prescription is designed for A6 specifically (see
+       printStylesRxA6), so it gets its own, smaller page-size hint. Either hint is a
+       suggestion, not a guarantee — Firefox in particular tends to ignore an exact custom
+       size and fall back to whatever's already selected in the print dialog (usually A4),
+       which is why both layouts stay sized to look right whichever way they end up printing. */
     @page half-sheet { size: A4 landscape; margin: 4mm; }
-    #rx-print-area, #cert-print-area, #lab-print-area { page: half-sheet; }
+    @page rx-a6 { size: 105mm 148.5mm; margin: 3mm; }
+    #cert-print-area, #lab-print-area { page: half-sheet; }
+    #rx-print-area { page: rx-a6; }
   }
 `;
 
@@ -5171,6 +5178,43 @@ const printStyles = {
 // printer), since browsers don't reliably honor a custom small paper size in the print dialog
 // itself — Firefox in particular tends to fall back to whatever's selected there (usually A4)
 // regardless of what a stylesheet asks for. A visible dashed line marks where to cut.
+// Print styles specifically for the prescription, purpose-built for A6 paper (105mm x 148.5mm)
+// in portrait orientation. Certificates and lab requests use the separate printStylesHalf below
+// and are unaffected by this — this only applies to the prescription. The parts that don't
+// depend on how many medications are on the prescription live here; the table itself is sized
+// dynamically by getRxDensityTier below, since a 1-medication prescription and a 6-medication
+// one need genuinely different treatment to both look right on a page this size.
+const printStylesRxA6 = {
+  page: { fontFamily: "Arial, Helvetica, sans-serif", color: "#111", padding: "4mm 4.5mm", width: "96mm", boxSizing: "border-box" },
+  headerRow: { display: "flex", alignItems: "center", borderBottom: "1.5px solid #0F5E56", paddingBottom: 4, marginBottom: 5 },
+  logoCircle: { width: 26, height: 26, borderRadius: "50%", border: "1.5px solid #0F5E56", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 },
+  headerSpacer: { width: 26, flexShrink: 0 },
+  headerTextCol: { flex: 1, textAlign: "center", minWidth: 0 },
+  clinicName: { fontSize: 12.5, fontWeight: 800, color: "#0F5E56", letterSpacing: 0.1, lineHeight: 1.15, whiteSpace: "nowrap" },
+  clinicSub: { fontSize: 9.5, color: "#333", lineHeight: 1.25 },
+  fieldsCol: { display: "flex", flexDirection: "column", gap: 2.5, marginBottom: 5 },
+  fieldLine: { fontSize: 8, borderBottom: "1px solid #999", paddingBottom: 1 },
+  footerRow: { marginTop: 8 },
+  followUp: { fontSize: 8, marginBottom: 4 },
+  signatureRow: { display: "flex", justifyContent: "flex-end" },
+  signatureBlock: { textAlign: "center", minWidth: 100 },
+  signatureSpace: { height: 26 },
+  signatureLine: { borderTop: "1px solid #333", paddingTop: 3, fontSize: 8.5, fontWeight: 600 },
+};
+
+// Picks how spacious or compact the medication table gets, purely based on how many
+// medications are actually on this prescription — a short list gets to breathe and use the
+// extra room on the page; a long one shrinks step by step to still fit on one A6 sheet,
+// stopping at a floor that's tight but still meant to be legible, not a font size that just
+// happens to fit.
+function getRxDensityTier(medCount) {
+  if (medCount <= 2) return { rxMark: 26, tableFont: 11.5, thFont: 10, cellPad: "6px 4px", indicationFont: 9 };
+  if (medCount <= 3) return { rxMark: 22, tableFont: 10, thFont: 9, cellPad: "4.5px 3.5px", indicationFont: 8 };
+  if (medCount <= 4) return { rxMark: 19, tableFont: 9, thFont: 8, cellPad: "3.5px 3px", indicationFont: 7.3 };
+  if (medCount <= 6) return { rxMark: 16, tableFont: 8, thFont: 7.3, cellPad: "2.5px 2.5px", indicationFont: 6.7 };
+  return { rxMark: 14, tableFont: 7.2, thFont: 6.6, cellPad: "1.8px 2px", indicationFont: 6.2 };
+}
+
 const printStylesHalf = {
   page: { fontFamily: "Arial, Helvetica, sans-serif", color: "#111", padding: "9mm 11mm", maxWidth: "198mm", boxSizing: "border-box" },
   headerRow: { display: "flex", alignItems: "center", gap: 15, borderBottom: "2.5px solid #0F5E56", paddingBottom: 9, marginBottom: 11 },
