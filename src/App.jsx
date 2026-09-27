@@ -3763,7 +3763,7 @@ function PrintableMedCert({ cert, patient, clinicInfo, provider }) {
           <Stethoscope size={28} color="#0F5E56" />
         </div>
         <div style={{ flex: 1, textAlign: "center", minWidth: 0 }}>
-          <div style={{ fontSize: 16, fontWeight: 800, color: "#0F5E56", letterSpacing: 0.2, lineHeight: 1.15, whiteSpace: "nowrap" }}>{clinicInfo.name}</div>
+          <div style={printStylesHalf.clinicName}>{clinicInfo.name}</div>
           <div style={printStylesHalf.clinicSub}>{clinicInfo.address}</div>
           <div style={printStylesHalf.clinicSub}>{clinicInfo.phone}</div>
         </div>
@@ -3774,7 +3774,7 @@ function PrintableMedCert({ cert, patient, clinicInfo, provider }) {
         <b>Date:</b> <Blank minWidth={170}>{fmtDate(issueDate)}</Blank>
       </div>
 
-      <div style={{ ...printStylesHalf.certTitle, fontSize: 16 }}>MEDICAL CERTIFICATE</div>
+      <div style={printStylesHalf.certTitle}>MEDICAL CERTIFICATE</div>
 
       <div style={{ fontSize: 18, marginTop: 12, lineHeight: 1.6 }}>
         <p style={{ margin: "0 0 6px" }}>To whom it may concern:</p>
@@ -3789,16 +3789,16 @@ function PrintableMedCert({ cert, patient, clinicInfo, provider }) {
       </div>
 
       <div style={{ marginTop: 12 }}>
-        <div style={{ fontSize: 18, fontWeight: 700 }}>Assessment/Impression:</div>
+        <div style={{ fontSize: 16, fontWeight: 700 }}>Assessment/Impression:</div>
         <div style={printStylesHalf.ruledBlock}>{cert.assessment || ""}</div>
       </div>
 
       <div style={{ marginTop: 12 }}>
-        <div style={{ fontSize: 18, fontWeight: 700 }}>Recommendation/s:</div>
+        <div style={{ fontSize: 16, fontWeight: 700 }}>Recommendation/s:</div>
         <div style={printStylesHalf.ruledBlock}>{cert.recommendation || ""}</div>
       </div>
 
-      <p style={{ fontSize: 14, marginTop: 14, lineHeight: 1.4 }}>
+      <p style={{ fontSize: 11, color: "#444", marginTop: 14, lineHeight: 1.35 }}>
         This certificate is being issued upon the request of the above-mentioned name for whatever
         purpose it may serve, excluding legal matters.
       </p>
@@ -5235,5 +5235,5 @@ const printStylesHalf = {
   signatureBlock: { textAlign: "center", minWidth: 190 },
   signatureLine: { borderTop: "1.5px solid #333", paddingTop: 6, fontSize: 16, fontWeight: 600 },
   certTitle: { textAlign: "center", fontSize: 23, fontWeight: 800, marginTop: 9, letterSpacing: 0.6 },
-  ruledBlock: { fontSize: 18, lineHeight: 1.7, borderBottom: "1.5px solid #999", minHeight: 50, marginTop: 4, whiteSpace: "pre-wrap" },
+  ruledBlock: { fontSize: 16, lineHeight: 1.7, borderBottom: "1.5px solid #999", minHeight: 50, marginTop: 4, whiteSpace: "pre-wrap" },
 };
